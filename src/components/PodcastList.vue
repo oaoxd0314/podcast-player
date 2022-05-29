@@ -7,7 +7,6 @@ import PodcastItem from './PodcastItem.vue'
     <header v-if=" Object.keys(channel).length === 0">
         <h1 class="text-xl font-semibold">{{errorMsg}}</h1>
         <span>發生預期外的錯誤，請稍後再試</span>
-
     </header>
     <header  v-else>
         <div class="flex flex-row mb-[2rem]">
@@ -39,11 +38,15 @@ import PodcastItem from './PodcastItem.vue'
             </template>
 
             <template #episode-name>
-                {{item.title[0]}}
+                <a class="hover:bg-transparent hover:underline" href="">{{item.title[0]}}</a>
             </template>
 
             <template #episode-date>
                 {{toYYYYMMDD(item.pubDate[0])}}
+            </template>
+
+            <template #episode-describe>
+                {{item['itunes:summary'][0]}}
             </template>
         </PodcastItem>
     </section>

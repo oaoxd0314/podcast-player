@@ -1,18 +1,23 @@
 
 
 <template>
-  <section class="flex flex-row mb-[1rem]">
-    <picture>
+  <section class="flex flex-row mb-[1rem] rounded-[.5rem] hover:bg-zinc-800">
+    <picture class="flex-shrink-0">
         <slot name="episode-img"></slot>
     </picture>
-    <article>
-        <h2>
-            <slot name="episode-name"></slot>
-        </h2>
-        <time>
-            <slot name="episode-date"></slot>
-        </time>
-    </article>
+    <figure class="p-[1rem]">
+        <figcaption class="pb-[1rem]">
+            <time>
+                <slot name="episode-date"></slot>
+            </time>
+            <h2>
+                <slot name="episode-name"></slot>
+            </h2>
+        </figcaption>
+        <p class="line-clamp-3">
+            <slot name="episode-describe"></slot>
+        </p>
+    </figure>
   </section>
 </template>
 
