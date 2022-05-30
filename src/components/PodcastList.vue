@@ -78,7 +78,7 @@ onMounted(() => {
                     </article>
                 </aside>
 
-                <div class="absolute bottom-[1rem] left-[1rem] p-2 w-[200px] bg-zinc-800 text-center rounded-md hover:cursor-pointer">
+                <div class="absolute bottom-0 left-0 p-2 w-[200px] bg-zinc-800 text-center rounded-md hover:cursor-pointer">
                     <button class="text-purple-500 font-semibold text-lg align-bottom">繼續</button>
                 </div>
             </section>

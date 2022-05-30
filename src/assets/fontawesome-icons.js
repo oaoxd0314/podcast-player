@@ -1,6 +1,6 @@
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 import { library } from "@fortawesome/fontawesome-svg-core";
-import { faPhone, faUser, faFlag ,faBookmark,faArrowDown,faEllipsis,faPlay} from "@fortawesome/free-solid-svg-icons";
+import { faPhone, faUser, faFlag ,faBookmark,faArrowDown,faEllipsis,faPlay,faArrowLeft,faAngleLeft} from "@fortawesome/free-solid-svg-icons";
 
 library.add(
     faPhone, 
@@ -10,6 +10,8 @@ library.add(
     faArrowDown,
     faEllipsis,
     faPlay,
+    faArrowLeft,
+    faAngleLeft
 );
 
 export default FontAwesomeIcon;

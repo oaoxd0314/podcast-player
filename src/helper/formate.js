@@ -32,3 +32,10 @@ function isLessThanWeek(date){
     
     return (nowTime - dateTime) < aWeek
 }
+
+export function secFormater(second){
+    const hours = Math.floor((second % 86400) / 3600);
+    const minutes = Math.floor(((second % 86400) % 3600) / 60);
+
+    return hours > 0 ? `${hours}小時 ${minutes}分鍾` : `${minutes}分鍾`
+}
