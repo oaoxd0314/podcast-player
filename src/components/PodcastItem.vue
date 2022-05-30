@@ -1,23 +1,51 @@
+<script setup>
 
+
+</script>
 
 <template>
-  <section class="flex flex-row mb-[1rem] rounded-[.5rem] hover:bg-zinc-800">
+  <section class="flex flex-row mb-[1rem] rounded-[.5rem] hover:bg-zinc-600 group">
     <picture class="flex-shrink-0">
         <slot name="episode-img"></slot>
     </picture>
-    <figure class="p-[1rem]">
-        <figcaption class="pb-[1rem]">
-            <time>
-                <slot name="episode-date"></slot>
-            </time>
-            <h2>
-                <slot name="episode-name"></slot>
-            </h2>
+    <div class="p-[1rem] flex flex-row">
+      <figure class="relative">
+
+        <figcaption class="pb-[1rem items-center">
+          <time>
+              <slot name="episode-date"></slot>
+          </time>
+          <h2>
+              <slot name="episode-name"></slot>
+          </h2>
         </figcaption>
+
         <p class="line-clamp-3">
-            <slot name="episode-describe"></slot>
+          <slot name="episode-describe"></slot>
         </p>
-    </figure>
+
+        <button class="font-semibold text-sm absolute bottom-0 left-0 p-[.5rem]">
+          <span class=" text-purple-500 mr-[.5rem] ">
+             <font-awesome-icon :icon="['fas', 'play']" />
+          </span>
+         
+          <span>播放</span>
+        </button>
+
+      </figure>
+
+      <div class="px-[1rem] flex flex-row align-middle items-center">
+          <span v-on:click="" class="p-[.5rem] hover:text-purple-500 invisible group-hover:visible">
+            <font-awesome-icon :icon="['fas', 'bookmark']" />
+          </span>
+          <span v-on:click="" class="p-[.5rem] hover:text-purple-500 invisible group-hover:visible">
+            <font-awesome-icon :icon="['fas', 'arrow-down']" />
+          </span>
+          <span v-on:click="" class="p-[.5rem] hover:text-purple-500 invisible group-hover:visible">
+            <font-awesome-icon :icon="['fas', 'ellipsis']" />
+          </span>
+      </div>
+    </div>
   </section>
 </template>
 

@@ -1,7 +1,9 @@
 <script setup>
-  import HelloWorld from './components/HelloWorld.vue'
-  import TheWelcome from './components/TheWelcome.vue'
-  import PodcastList from './components/PodcastList.vue'
+  import { RouterLink, RouterView } from 'vue-router'
+  import {provide} from 'vue'
+  import store from './store'
+
+  provide("mapStore", store);
 </script>
 
 <template>
@@ -14,8 +16,7 @@
   </header> -->
 
   <main>
-     <!-- <TheWelcome /> -->
-    <PodcastList />
+    <RouterView />
   </main>
 </template>
 
