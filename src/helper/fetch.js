@@ -1,30 +1,47 @@
-import axios from 'axios';
+const API_HOST = 'http://localhost:90'
 
-function requestHandler(response){
-
-}
-
-export function fetchAPI(url='',param={}){
-    return new Promise((resolve,reject)=>{
-        try {
-            axios.get(url,param).then(response=>{
-                if(response.status !== 200){
-                    reject(response)
+export function fetchAPI(endpoint='',param={}){
+    const payload = {
+        headers: new Headers({
+            "content-type": "application/json",
+            "Access-Control-Allow-Origin" : "localhost", 
+            "Access-Control-Allow-Credentials" : true 
+        }) ,
+        body: JSON.stringify(param),
+        method: "POST",
+        mode: "cors",
+    }
+    try {
+        return new Promise(async (resolve,reject)=>{
+            fetch(API_HOST+endpoint,payload).then(response=>{
+                if(response.ok){
+                    response.json().then(res=>{
+                        let resData = callBackHandler(res,response)
+                        resolve(resData)
+                    })
                 }
-
-                resolve(response)
-                
             }).catch(err=>{
-                reject(err)
+                let errData = callBackHandler(error.response.data,{status:400})
+                reject(errData);
             })
-        } catch (error) {
-            console.log(error)
-            reject(error)
-        }
-    }) 
+        }) 
+    } catch (error) {
+        console.log(error)
+        return callBackHandler(error.response.data,{status:500})
+        // throw new Error(error.response.data)
+    }
+    
 }
 
 
 export function mutliFetch(){
 
+}
+
+
+function callBackHandler(data,res){
+    return {
+        status: res.status,
+        data:data
+    }
 }
