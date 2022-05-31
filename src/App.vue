@@ -1,5 +1,7 @@
 <script setup>
   import { RouterLink, RouterView } from 'vue-router'
+  import MediaPlayer from './components/MediaPlayer.vue';
+  import NavbarVue from './components/Navbar.vue';
   import {provide} from 'vue'
   import store from './store'
 
@@ -7,23 +9,25 @@
 </script>
 
 <template>
-  <!-- <header>
-    <img alt="Vue logo" class="logo" src="./assets/logo.svg" width="125" height="125" />
 
-    <div class="wrapper">
-      <HelloWorld msg="You did it!" />
-    </div>
-  </header> -->
+  <header>
+    <NavbarVue />
+  </header>
 
   <main>
     <RouterView />
   </main>
+
+  <footer>
+    <MediaPlayer />
+  </footer>
+  
 </template>
 
 <style>
 @import './assets/base.css';
 
-#app {
+main {
   max-width: 1280px;
   margin: 0 auto;
   padding: 2rem;
@@ -58,7 +62,7 @@ a,
     place-items: center;
   }
 
-  #app {
+  main {
     display: grid;
     /* grid-template-columns: 1fr 1fr; */
     padding: 0 2rem;

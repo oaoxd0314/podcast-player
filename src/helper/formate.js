@@ -33,9 +33,28 @@ function isLessThanWeek(date){
     return (nowTime - dateTime) < aWeek
 }
 
-export function secFormater(second){
-    const hours = Math.floor((second % 86400) / 3600);
-    const minutes = Math.floor(((second % 86400) % 3600) / 60);
+function timeMapper(second,type){
+    const transferMap ={
+        days : Math.floor(second / 86400),
+        hours : Math.floor((second % 86400) / 3600),
+        minutes : Math.floor(((second % 86400) % 3600) / 60),
+        seconds: Math.floor(((second % 86400) % 3600) % 60),
+    } 
+
+    return transferMap[type]
+}
+
+export function secFormateStr(second){
+    const hours = timeMapper(second,'hours')
+    const minutes = timeMapper(second,'minutes')
 
     return hours > 0 ? `${hours}小時 ${minutes}分鍾` : `${minutes}分鍾`
+}
+
+export function secFormateTime(second){
+    const hours = coverTen(timeMapper(second,'hours'))
+    const minutes = coverTen(timeMapper(second,'minutes'))
+    const seconds = coverTen(timeMapper(second,'seconds'))
+
+    return parseInt(hours) > 0 ? `${hours}:${minutes}:${seconds}` : `${minutes}:${seconds}`
 }

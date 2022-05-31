@@ -1,5 +1,12 @@
 <script setup>
+  import { reactive, inject, toRefs } from "vue";
 
+  const mapStore = inject("mapStore");
+  const { store } = mapStore;
+
+  const state = reactive({
+    ...toRefs(store),
+  });
 
 </script>
 
@@ -24,14 +31,8 @@
           <slot name="episode-describe"></slot>
         </p>
 
-        <button class="font-semibold text-sm absolute bottom-0 left-0 p-[.5rem]">
-          <span class=" text-purple-500 mr-[.5rem] ">
-             <font-awesome-icon :icon="['fas', 'play']" />
-          </span>
-         
-          <span>播放</span>
-        </button>
-
+        <slot name="episode-play"></slot>
+        
       </figure>
 
       <div class="px-[1rem] flex flex-row align-middle items-center">
