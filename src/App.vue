@@ -1,11 +1,21 @@
 <script setup>
+  import {onMounted, provide} from 'vue'
   import { RouterLink, RouterView } from 'vue-router'
   import MediaPlayer from './components/MediaPlayer.vue';
   import NavbarVue from './components/Navbar.vue';
-  import {provide} from 'vue'
+
   import store from './store'
+  import {getStorage,initEpStorage,deleteStorage} from './helper'
 
   provide("mapStore", store);
+
+  onMounted(()=>{
+    // deleteStorage('epStatus')
+    if(getStorage('epStatus') === null){
+      initEpStorage()
+    }
+  })
+
 </script>
 
 <template>

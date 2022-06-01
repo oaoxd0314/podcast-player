@@ -2,7 +2,7 @@
 import { onMounted, reactive, inject, toRefs } from "vue";
 import ChannelBoard from '../components/ChannelBoard.vue';
 import EpisodeItem from '../components/EpisodeItem.vue'
-import { fetchAPI,toYYYYMMDD,secFormateStr } from '../helper'
+import { fetchAPI,toYYYYMMDD,secFormateStr,getEpStatus,setEpStatus,getStorage } from '../helper'
 import ChannelBoardLoading from "../components/lodingView/channelBoardLoading.vue";
 import EpisodeListLoading from "../components/lodingView/episodeListLoading.vue";
 
@@ -62,10 +62,17 @@ function loadMore(){
     state.limit += 10
 }
 
+function getStorageCurrTime(guid){
+    console.log(guid)
+    let epStatus = getEpStatus(guid)
+    return ('currTime' in epStatus) ? epStatus.currTime : 0
+}
+
 onMounted(() => {
     window.addEventListener("scroll", handleScroll);
     getFeed(RSS_URL)
 })
+
 </script>
 
 <template>
@@ -128,7 +135,8 @@ onMounted(() => {
                         <span> 播放</span>
                     </button>
 
-                    <span class="text-xs font-semibold">{{secFormateStr(item.itunes.duration)}}</span>
+                    <span v-if="getStorageCurrTime(item.guid) > 0" >{{getStorageCurrTime(item.guid)}} </span>
+                    <span v-else class="text-xs font-semibold">{{secFormateStr(item.itunes.duration)}}</span>
                 </div>
             </template>
 

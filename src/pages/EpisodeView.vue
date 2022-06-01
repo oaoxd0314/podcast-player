@@ -1,6 +1,7 @@
 <script setup>
   import { reactive, inject, defineProps, toRefs, onMounted } from "vue";
   import { useRoute } from "vue-router";
+  import EpisodeBoardLoading from '../components/lodingView/episodeBoardLoading.vue'
   import { toYYYYMMDD,secFormateStr } from "../helper";
   const mapStore = inject("mapStore");
   const { store,setPlayEpisode } = mapStore;
@@ -9,6 +10,7 @@
   const state = reactive({
     ...toRefs(store),
     episodeData: {},
+    loading:true,
   });
   
   function playEp(ep){
@@ -17,21 +19,27 @@
 
   function getEpisodeData(){
     state.episodeData = state.episodeList.find(ep=>ep.guid === route.params.epid)
+    waitTillImgSet()
+  }
+
+  function waitTillImgSet(){
+    setTimeout(function () {
+        state.loading = false
+    }, 1000);
   }
 
   onMounted(()=>{
     getEpisodeData()
+    waitTillImgSet()
   })
 
 </script>
 
 <template>
-  <div v-if="Object.keys(state.episodeData).length === 0" >
-    loading
-  </div>
-
-  <div class="ml-[2rem] mt-[2rem]" v-else>
-    <div  class="flex flex-row">
+  <div class="ml-[2rem] mt-[2rem]" v-if="Object.keys(state.episodeData).length > 0">
+    
+    <EpisodeBoardLoading v-if="state.loading"/>
+    <div v-else class="flex flex-row">
       <picture>
         <img class="h-[300px] aspect-auto rounded-[.5rem] m-[1.5rem] ml-0" :src="state.episodeData.itunes.image"  alt="episode picture" >
       </picture>

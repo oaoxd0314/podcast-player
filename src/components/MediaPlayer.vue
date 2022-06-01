@@ -1,8 +1,9 @@
 <script setup>
 import { reactive, toRefs, inject,onMounted,ref ,onUpdated} from 'vue';
-import {secFormateTime,fetchAPI} from '../helper'
+import {secFormateTime,fetchAPI,getEpStatus,setEpStatus} from '../helper'
 const mapStore = inject("mapStore");
 const { store, setPlayEpisode } = mapStore;
+
 const state = reactive({
     ...toRefs(store),
     isPlay: false,
@@ -27,7 +28,6 @@ function playEp(){
     audioEle.value.load()
     audioEle.value.play();
     state.isPlay = true
-    console.log(audioEle.value.duration)
 }
 
 function stopEp(){
@@ -69,9 +69,6 @@ function loadEpisode(episode){
     state.nextEp = state.episodeList[nowIdx-1]
     state.preEp =  state.episodeList[nowIdx+1]
     state.playedEp = episode.enclosure.url
-
-    console.log(episode.enclosure.url)
-
     setUpEp(episode)
 }
 

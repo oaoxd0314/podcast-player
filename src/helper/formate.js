@@ -58,3 +58,11 @@ export function secFormateTime(second){
 
     return parseInt(hours) > 0 ? `${hours}:${minutes}:${seconds}` : `${minutes}:${seconds}`
 }
+
+export function parseMapToJson(map){
+    return JSON.stringify(Array.from(map.entries()))
+}
+
+export function reverseJsonToMap(json){
+    return new Map(JSON.parse(json));
+}
