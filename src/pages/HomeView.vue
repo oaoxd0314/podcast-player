@@ -3,6 +3,8 @@ import { onMounted, reactive, inject, toRefs } from "vue";
 import ChannelBoard from '../components/ChannelBoard.vue';
 import EpisodeItem from '../components/EpisodeItem.vue'
 import { fetchAPI,toYYYYMMDD,secFormateStr } from '../helper'
+import ChannelBoardLoading from "../components/lodingView/channelBoardLoading.vue";
+import EpisodeListLoading from "../components/lodingView/episodeListLoading.vue";
 
 const mapStore = inject("mapStore");
 const { store ,setEpisodeList ,setChannel ,setPlayEpisode } = mapStore;
@@ -67,8 +69,13 @@ onMounted(() => {
 </script>
 
 <template>
-    <section v-if="Object.keys(state.channel).length > 0">
-        <ChannelBoard>
+    <section v-if="state.loading" >
+        <ChannelBoardLoading />
+        <EpisodeListLoading />
+    </section>
+
+    <section v-else >
+        <ChannelBoard v-if="Object.keys(state.channel).length > 0">
             <template #channel-img>
                 <img class="h-[300px] main-img" :src="state.channel.image.url" alt="">
             </template>
@@ -91,10 +98,8 @@ onMounted(() => {
                 <button @click="()=>onPlayClick(state.episodeList[0])" class="main-play-btn">播放最新一集</button>
             </template>
         </ChannelBoard>
-    </section>
-    
-    <section id="episode-list" v-if="state.episodeList.length > 0">
-        <EpisodeItem  v-for="item in state.episodeList.slice(0, state.limit)" :key="item.id">
+
+        <EpisodeItem v-if="state.episodeList.length > 0"  v-for="item in state.episodeList.slice(0, state.limit)" :key="item.id">
 
             <template #episode-img>
                 <img class="h-[200px] main-img" :src="item.itunes.image" alt="episode-img">
@@ -129,11 +134,4 @@ onMounted(() => {
 
         </EpisodeItem>
     </section>
-
 </template>
-
-<style lang="postcss" scoped>
-    .main-img{
-        @apply aspect-auto p-[1rem] rounded-[10%]
-    }
-</style>

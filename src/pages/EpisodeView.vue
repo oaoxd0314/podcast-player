@@ -11,10 +11,6 @@
     episodeData: {},
   });
   
-  onMounted(()=>{
-    getEpisodeData()
-  })
-
   function playEp(ep){
     setPlayEpisode(ep)
   }
@@ -22,6 +18,11 @@
   function getEpisodeData(){
     state.episodeData = state.episodeList.find(ep=>ep.guid === route.params.epid)
   }
+
+  onMounted(()=>{
+    getEpisodeData()
+  })
+
 </script>
 
 <template>

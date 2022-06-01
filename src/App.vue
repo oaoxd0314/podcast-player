@@ -47,6 +47,10 @@ header {
   @apply text-3xl
 }
 
+.main-img{
+  @apply aspect-auto p-[1rem] rounded-[10%]
+}
+
 .block-wrapper{
   @apply p-[1rem]
 }
