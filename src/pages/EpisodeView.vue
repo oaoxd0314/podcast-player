@@ -40,25 +40,25 @@
           <span>
             {{ toYYYYMMDD(state.episodeData.pubDate) }}．第{{state.episodeData.itunes.season}}季第{{state.episodeData.itunes.episode}}集．{{secFormateStr(state.episodeData.itunes.duration)}}
           </span>
-          <h1 class="text-3xl font-semibold text-white">
+          <h1 class="main-title font-semibold text-white">
             {{state.episodeData.title}}
           </h1>
-          <h1 class="text-3xl text-purple-500">
+          <h1 class="main-title text-purple-500">
             {{state.channel.title}}
           </h1>
         </div>
         <div class="absolute bottom-0 left-0 flex flex-row justify-between w-full">
-          <button @click="()=>playEp(state.episodeData)" class="p-2 w-[200px] bg-purple-500 text-center rounded-md hover:cursor-pointer text-white font-semibold">
+          <button @click="()=>playEp(state.episodeData)" class="main-play-btn">
             播放
           </button>
           <div class="flex items-center">
-            <span v-on:click="" class="p-[.5rem] hover:text-purple-500 ">
+            <span v-on:click="" class="episode-function-icon">
               <font-awesome-icon :icon="['fas', 'bookmark']" />
             </span>
-            <span v-on:click="" class="p-[.5rem] hover:text-purple-500 ">
+            <span v-on:click="" class="episode-function-icon">
               <font-awesome-icon :icon="['fas', 'arrow-down']" />
             </span>
-            <span v-on:click="" class="p-[.5rem] hover:text-purple-500 ">
+            <span v-on:click="" class="episode-function-icon">
               <font-awesome-icon :icon="['fas', 'ellipsis']" />
             </span>
           </div>

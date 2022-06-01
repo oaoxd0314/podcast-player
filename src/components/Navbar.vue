@@ -12,7 +12,7 @@ function goBack(){
 
 <template>
     <nav v-if="route.params.epid && route.params.epid.length>0 " class="fixed top-4 left-4 w-screen z-[999]">
-      <span @click="goBack" class="p-[.5rem] px-[.75rem] rounded-[5px] cursor-pointer hover:bg-zinc-700">
+      <span @click="goBack" class="p-[.5rem] px-[.75rem] rounded-[5px] cursor-pointer hover:bg-zinc-600">
         <font-awesome-icon :icon="['fas', 'angle-left']" />
       </span>
     </nav>

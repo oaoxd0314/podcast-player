@@ -24,30 +24,39 @@
   
 </template>
 
-<style>
+<style lang="postcss">
 @import './assets/base.css';
 
+#app{
+  @apply w-full
+}
+
 main {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 2rem;
-  font-weight: normal;
+  @apply max-w-[1280px] font-normal my-0 mx-auto p-[2rem]
 }
 
 header {
   line-height: 1.5;
 }
 
-.logo {
-  display: block;
-  margin: 0 auto 2rem;
+.main-play-btn{
+ @apply font-semibold bg-purple-500 text-white p-2 w-[200px] text-lg text-center rounded-md hover:cursor-pointer 
+} 
+
+.main-title{
+  @apply text-3xl
 }
 
-a,
-.green {
-  text-decoration: none;
-  color: hsla(160, 100%, 37%, 1);
-  transition: 0.4s;
+.block-wrapper{
+  @apply p-[1rem]
+}
+
+.inline-space{
+  @apply mb-[1rem]
+}
+
+.episode-function-icon{
+  @apply p-[.5rem] hover:text-purple-500
 }
 
 @media (hover: hover) {
@@ -64,24 +73,7 @@ a,
 
   main {
     display: grid;
-    /* grid-template-columns: 1fr 1fr; */
     padding: 0 2rem;
-  }
-
-  header {
-    display: flex;
-    place-items: center;
-    padding-right: calc(var(--section-gap) / 2);
-  }
-
-  header .wrapper {
-    display: flex;
-    place-items: flex-start;
-    flex-wrap: wrap;
-  }
-
-  .logo {
-    margin: 0 2rem 0 0;
   }
 }
 </style>

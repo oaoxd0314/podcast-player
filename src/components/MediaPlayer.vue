@@ -113,13 +113,10 @@ onUpdated(()=>{
         }
     }
 })
-
-console.log(state.isPlay)
 </script>
 
 <template>
     <div v-if="Object.keys(state.nowPlaying).length > 0" class="fixed bottom-0 w-full bg-slate-800 text-white flex flex-col">
-
         <!-- audio -->
         <audio hidden ref="audioEle" @timeupdate="onTimeUpdate">
             <source :src="state.playedEp">
@@ -136,7 +133,7 @@ console.log(state.isPlay)
         <div class="flex flex-row gap-4 relative">
             <div class="flex flex-row flex-1">
                 <picture>
-                    <img class="h-[100px] aspect-auto p-[1rem]" :src="state.nowPlaying.itunes.image" alt="episode-pic">
+                    <img class="h-[100px] aspect-auto block-wrapper" :src="state.nowPlaying.itunes.image" alt="episode-pic">
                 </picture>
                 <div class="flex flex-col justify-center">
                     <p>{{state.nowPlaying.title}}</p>
