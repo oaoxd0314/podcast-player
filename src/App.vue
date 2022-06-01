@@ -18,7 +18,7 @@
     <RouterView />
   </main>
 
-  <footer>
+  <footer class="h-[120px]" >
     <MediaPlayer />
   </footer>
   

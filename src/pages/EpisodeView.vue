@@ -3,7 +3,7 @@
   import { useRoute } from "vue-router";
   import { toYYYYMMDD,secFormateStr } from "../helper";
   const mapStore = inject("mapStore");
-  const { store } = mapStore;
+  const { store,setPlayEpisode } = mapStore;
   const route = useRoute();
 
   const state = reactive({
@@ -15,8 +15,11 @@
     getEpisodeData()
   })
 
+  function playEp(ep){
+    setPlayEpisode(ep)
+  }
+
   function getEpisodeData(){
-    console.log(state.episodeList)
     state.episodeData = state.episodeList.find(ep=>ep.guid === route.params.epid)
   }
 </script>
@@ -45,7 +48,7 @@
           </h1>
         </div>
         <div class="absolute bottom-0 left-0 flex flex-row justify-between w-full">
-          <button class="p-2 w-[200px] bg-purple-500 text-center rounded-md hover:cursor-pointer text-white font-semibold">
+          <button @click="()=>playEp(state.episodeData)" class="p-2 w-[200px] bg-purple-500 text-center rounded-md hover:cursor-pointer text-white font-semibold">
             播放
           </button>
           <div class="flex items-center">

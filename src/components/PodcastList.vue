@@ -16,6 +16,7 @@ const state = reactive({
     status: '',
     loading: false,
     error: false,
+    limit:10,
 });
 
 async function getFeed(url) {
@@ -45,7 +46,26 @@ function continuePlaying(){
     console.log(state)
 }
 
+
+function handleScroll(){
+    // console.log(window.scrollY)
+    // console.log(window.screen.height)
+    console.log('------------------------')
+    console.log(document.body.scrollHeight)
+    console.log(document.body.clientHeight)
+    console.log('------------------------')
+    if (window.scrollY + window.screen.height >= document.body.scrollHeight+120) {
+        loadMore();
+    }
+}
+
+function loadMore(){
+    state.limit += 10
+}
+
+
 onMounted(() => {
+    window.addEventListener("scroll", handleScroll);
     getFeed(RSS_URL)
 })
 </script>
@@ -73,14 +93,14 @@ onMounted(() => {
                 </aside>
 
                 <div class="absolute bottom-[1rem] left-0 p-2 w-[200px] bg-zinc-800 text-center rounded-md hover:cursor-pointer">
-                    <button @click="continuePlaying" class="text-purple-500 font-semibold text-lg align-bottom">繼續</button>
+                    <button @click="()=>onPlayClick(state.episodeList[0])" class="text-purple-500 font-semibold text-lg align-bottom">播放最新一集</button>
                 </div>
             </section>
         </div>
     </section>
 
     <section>
-        <PodcastItem  v-for="item in state.episodeList.slice(0, 10)" :key="item.id">
+        <PodcastItem  v-for="item in state.episodeList.slice(0, state.limit)" :key="item.id">
             <template #episode-img>
                 <img class="h-[200px] p-[1rem] rounded-[10%]" :src="item.itunes.image"
                     alt="podcast-img">
@@ -111,10 +131,12 @@ onMounted(() => {
 
                     <span class="text-xs font-semibold">{{secFormateStr(item.itunes.duration)}}</span>
                 </div>
-                
-                
             </template>
         </PodcastItem>
     </section>
 
 </template>
+
+<style lang="postcss" scoped>
+
+</style>
