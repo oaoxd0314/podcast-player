@@ -8,7 +8,7 @@ const numberToWeekDay = {
     6:'星期六',
 }
 
-export function toYYYYMMDD(date){
+export function toStrMountAndDay(date){
     let nowDate = new Date(date)
 
     if(isLessThanWeek(nowDate)){
@@ -48,7 +48,7 @@ export function secFormateStr(second){
     const hours = timeMapper(second,'hours')
     const minutes = timeMapper(second,'minutes')
 
-    return hours > 0 ? `${hours}小時 ${minutes}分鍾` : `${minutes}分鍾`
+    return hours > 0 ? `${hours}小時 ${minutes}分鐘` : `${minutes}分鐘`
 }
 
 export function secFormateTime(second){

@@ -109,7 +109,7 @@ function loadEpisode(episode){
 }
 
 onUpdated(()=>{
-    console.log('state change')
+    // console.log('state change')
     if(Object.keys(state.nowPlaying).length > 0){
         // receive global playing target to actully play&load ep
         if(state.nowPlaying.enclosure.url !== state.playedEp){
@@ -125,7 +125,7 @@ onUpdated(()=>{
 
         // when outside action trigger globalIsPlay -> false,  pause audio
         if(state.globalIsPlay === false && state.outsideTrigger){
-            console.log('outside stop!!!!')
+            // console.log('outside stop!!!!')
             setOutSideTrigger(false)
             stopEp()
         }

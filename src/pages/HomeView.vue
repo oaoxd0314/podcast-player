@@ -1,7 +1,7 @@
 <script setup>
 import { onMounted, reactive, inject, toRefs } from "vue";
 
-import { fetchAPI,toYYYYMMDD,secFormateStr,getStorageCurrTime,getStorage } from '../helper'
+import { fetchAPI,toStrMountAndDay,secFormateStr,getStorageCurrTime,getStorage } from '../helper'
 
 import Progress from "../components/Progress.vue"; 
 import ChannelBoard from '../components/ChannelBoard.vue';
@@ -42,22 +42,15 @@ async function getFeed(url) {
 }
 
 function onPlayClick(episode){
-    console.log(state.globalIsPlay)
-    console.log(episode.guid === state.nowPlaying.guid)
 
     if(state.globalIsPlay && (episode.guid === state.nowPlaying.guid)){ 
-        console.log('stop?')
         setGlobalIsPlay(false)
     }else{
-        console.log('play?')
         setOutSideTrigger(true)
         setPlayEpisode(episode)
     }
 }
 
-function continuePlaying(){
-    console.log(state)
-}
 
 function handleScroll(){
     // console.log(window.scrollY)
@@ -132,7 +125,7 @@ onMounted(() => {
             </template>
 
             <template #episode-date>
-                {{ toYYYYMMDD(item.pubDate) }}
+                {{ toStrMountAndDay(item.pubDate) }}
             </template>
 
             <template #episode-describe>

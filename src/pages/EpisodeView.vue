@@ -2,7 +2,7 @@
   import { reactive, inject, toRefs, onMounted } from "vue";
   import { useRoute, } from "vue-router";
 
-  import { toYYYYMMDD, secFormateStr, getStorageCurrTime } from "../helper";
+  import { toStrMountAndDay, secFormateStr, getStorageCurrTime } from "../helper";
   import router from "../router";
 
   import EpisodeBoardLoading from '../components/lodingView/episodeBoardLoading.vue'
@@ -70,7 +70,7 @@
       <article class="flex flex-col m-[1.5rem] flex-grow">
         <div class="flex flex-col justify-center">
           <span>
-            {{ toYYYYMMDD(state.episodeData.pubDate) }}．第{{state.episodeData.itunes.season}}季第{{state.episodeData.itunes.episode}}集．{{secFormateStr(state.episodeData.itunes.duration)}}
+            {{ toStrMountAndDay(state.episodeData.pubDate) }}．第{{state.episodeData.itunes.season}}季第{{state.episodeData.itunes.episode}}集．{{secFormateStr(state.episodeData.itunes.duration)}}
           </span>
           <h1 class="main-title font-semibold text-white">
             {{state.episodeData.title}}
