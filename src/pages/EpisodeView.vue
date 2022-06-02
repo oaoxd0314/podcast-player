@@ -1,8 +1,14 @@
 <script setup>
-  import { reactive, inject, defineProps, toRefs, onMounted } from "vue";
-  import { useRoute } from "vue-router";
+  import { reactive, inject, toRefs, onMounted } from "vue";
+  import { useRoute, } from "vue-router";
+
+  import { toYYYYMMDD, secFormateStr, getStorageCurrTime } from "../helper";
+  import router from "../router";
+
   import EpisodeBoardLoading from '../components/lodingView/episodeBoardLoading.vue'
-  import { toYYYYMMDD,secFormateStr } from "../helper";
+  import ArticleLoading from "../components/lodingView/articleLoading.vue";
+  import Progress from "../components/Progress.vue";
+
   const mapStore = inject("mapStore");
   const { store,setPlayEpisode } = mapStore;
   const route = useRoute();
@@ -18,30 +24,47 @@
   }
 
   function getEpisodeData(){
-    state.episodeData = state.episodeList.find(ep=>ep.guid === route.params.epid)
-    waitTillImgSet()
+    state.episodeData = state.episodeList.find(ep=>ep.guid === route.params.epid) || {}
   }
 
   function waitTillImgSet(){
     setTimeout(function () {
         state.loading = false
-    }, 1000);
+    }, 100);
   }
 
   onMounted(()=>{
-    getEpisodeData()
-    waitTillImgSet()
+    if(state.episodeList.length<1){
+      router.push('/')
+    }else{
+      getEpisodeData()
+      waitTillImgSet()
+    }
   })
-
 </script>
 
 <template>
-  <div class="ml-[2rem] mt-[2rem]" v-if="Object.keys(state.episodeData).length > 0">
-    
-    <EpisodeBoardLoading v-if="state.loading"/>
-    <div v-else class="flex flex-row">
-      <picture>
+
+  <div class="mt-[2rem]" v-if="state.loading">
+    <EpisodeBoardLoading />
+
+    <hr class="box-border h-[0px] my-[20px]" />
+
+    <ArticleLoading />
+  </div>
+
+  <div class="mt-[2rem]" v-else>
+    <div class="flex flex-row">
+      <picture class="relative" >
         <img class="h-[300px] aspect-auto rounded-[.5rem] m-[1.5rem] ml-0" :src="state.episodeData.itunes.image"  alt="episode picture" >
+
+        <div class="absolute bottom-[3rem] w-full">
+          <Progress 
+            :curr-time="parseInt(state.episodeData.guid === state.nowPlaying.guid ? state.globalPlayingCurrTime : getStorageCurrTime(state.episodeData.guid))" 
+            :duration="parseInt(state.episodeData.itunes.duration)" >
+          </Progress>
+        </div>
+
       </picture>
 
       <article class="flex flex-col m-[1.5rem] flex-grow">
@@ -56,9 +79,10 @@
             {{state.channel.title}}
           </h1>
         </div>
+
         <div class="absolute bottom-0 left-0 flex flex-row justify-between w-full">
           <button @click="()=>playEp(state.episodeData)" class="main-play-btn">
-            播放
+            {{ state.globalIsPlay ? '暫停' : '播放'}}
           </button>
           <div class="flex items-center">
             <span v-on:click="" class="episode-function-icon">

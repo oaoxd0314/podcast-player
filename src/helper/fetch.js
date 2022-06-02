@@ -21,7 +21,7 @@ export function fetchAPI(endpoint='',param={}){
                     })
                 }
             }).catch(err=>{
-                let errData = callBackHandler(error.response.data,{status:400})
+                let errData = callBackHandler(err.response.data,{status:400})
                 reject(errData);
             })
         }) 

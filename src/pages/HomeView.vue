@@ -1,13 +1,16 @@
 <script setup>
 import { onMounted, reactive, inject, toRefs } from "vue";
+
+import { fetchAPI,toYYYYMMDD,secFormateStr,getStorageCurrTime,getStorage } from '../helper'
+
+import Progress from "../components/Progress.vue"; 
 import ChannelBoard from '../components/ChannelBoard.vue';
 import EpisodeItem from '../components/EpisodeItem.vue'
-import { fetchAPI,toYYYYMMDD,secFormateStr,getEpStatus,setEpStatus,getStorage } from '../helper'
 import ChannelBoardLoading from "../components/lodingView/channelBoardLoading.vue";
 import EpisodeListLoading from "../components/lodingView/episodeListLoading.vue";
 
 const mapStore = inject("mapStore");
-const { store ,setEpisodeList ,setChannel ,setPlayEpisode } = mapStore;
+const { store ,setEpisodeList ,setChannel ,setPlayEpisode,setGlobalIsPlay,setOutSideTrigger } = mapStore;
 
 const state = reactive({
     ...toRefs(store),
@@ -39,7 +42,17 @@ async function getFeed(url) {
 }
 
 function onPlayClick(episode){
-    setPlayEpisode(episode)
+    console.log(state.globalIsPlay)
+    console.log(episode.guid === state.nowPlaying.guid)
+
+    if(state.globalIsPlay && (episode.guid === state.nowPlaying.guid)){ 
+        console.log('stop?')
+        setGlobalIsPlay(false)
+    }else{
+        console.log('play?')
+        setOutSideTrigger(true)
+        setPlayEpisode(episode)
+    }
 }
 
 function continuePlaying(){
@@ -62,15 +75,10 @@ function loadMore(){
     state.limit += 10
 }
 
-function getStorageCurrTime(guid){
-    console.log(guid)
-    let epStatus = getEpStatus(guid)
-    return ('currTime' in epStatus) ? epStatus.currTime : 0
-}
-
 onMounted(() => {
     window.addEventListener("scroll", handleScroll);
     getFeed(RSS_URL)
+    console.log(getStorage('epStatus'))
 })
 
 </script>
@@ -106,8 +114,13 @@ onMounted(() => {
             </template>
         </ChannelBoard>
 
-        <EpisodeItem v-if="state.episodeList.length > 0"  v-for="item in state.episodeList.slice(0, state.limit)" :key="item.id">
-
+        <EpisodeItem 
+            v-if="state.episodeList.length > 0"  
+            v-for="item in state.episodeList.slice(0, state.limit)" 
+            :key="item.guid"
+            :episode="item"
+            @playEpisode="onPlayClick"
+        >
             <template #episode-img>
                 <img class="h-[200px] main-img" :src="item.itunes.image" alt="episode-img">
             </template>
@@ -126,18 +139,38 @@ onMounted(() => {
                 {{ item.itunes.summary }}
             </template>
 
-            <template #episode-play>
-                <div class="absolute bottom-0 left-0 flex flex-row items-center">
-                    <button @click="()=>onPlayClick(item)" class="font-semibold text-sm p-[.5rem] ">
-                        <span class=" text-purple-500 mr-[.5rem] ">
-                            <font-awesome-icon :icon="['fas', 'play']" />
-                        </span>
-                        <span> 播放</span>
-                    </button>
+            <template #episode-play-icon>
+                <font-awesome-icon 
+                    v-if="item.guid === state.nowPlaying.guid && state.globalIsPlay" 
+                    :icon="['fas', 'stop']" 
+                />
+                <font-awesome-icon v-else :icon="['fas', 'play']" />
+            </template>
 
-                    <span v-if="getStorageCurrTime(item.guid) > 0" >{{getStorageCurrTime(item.guid)}} </span>
-                    <span v-else class="text-xs font-semibold">{{secFormateStr(item.itunes.duration)}}</span>
-                </div>
+            <template #episode-play-status>
+                <span v-if="getStorageCurrTime(item.guid) >= item.itunes.duration"> 已播放 </span>
+                <span v-else-if="getStorageCurrTime(item.guid) > 0"> 剩餘 </span>
+                <span v-else> 播放</span>
+            </template>
+
+
+            <template #episode-play-time>
+                <span v-if="getStorageCurrTime(item.guid) === 0 || getStorageCurrTime(item.guid) >= item.itunes.duration" class="text-xs font-semibold">{{secFormateStr(item.itunes.duration)}}</span>
+
+                <span v-else class="flex flex-col w-[150px]">   
+                    <time class="text-xs font-semibold mb-[.5rem]"> 
+                        {{secFormateStr(item.itunes.duration - getStorageCurrTime(item.guid))}}  
+                    </time>
+
+                    <div class="flex-grow">
+                        <Progress
+                            :curr-time="parseInt(item.guid === state.nowPlaying.guid ? state.globalPlayingCurrTime : getStorageCurrTime(item.guid))" 
+                            :duration="parseInt(item.itunes.duration)"
+                        ></Progress>
+                    </div>
+                    
+                </span>
+                
             </template>
 
         </EpisodeItem>

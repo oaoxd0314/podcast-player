@@ -1,13 +1,11 @@
 <script setup>
-import { reactive, toRefs, inject,onMounted,ref ,onUpdated} from 'vue';
-import {secFormateTime,fetchAPI,getEpStatus,setEpStatus} from '../helper'
+import { reactive, toRefs, inject, ref, onUpdated} from 'vue';
+import {secFormateTime,setStorageCurrTime,getStorageCurrTime} from '../helper'
 const mapStore = inject("mapStore");
-const { store, setPlayEpisode } = mapStore;
+const { store, setPlayEpisode,setGlobalCurrTime,setGlobalIsPlay,setOutSideTrigger } = mapStore;
 
 const state = reactive({
     ...toRefs(store),
-    isPlay: false,
-    currTime: 0,
     isMute: false,
     volume:100,
     playedEp:'',
@@ -18,112 +16,136 @@ const state = reactive({
 const audioEle = ref(null)
 
 // audio state change
-function setUpEp(episode){
+function setUpAudio(episode){
     audioEle.value.src= episode.enclosure.url
     audioEle.value.load()
-    
 }
 
-function playEp(){
-    audioEle.value.load()
-    audioEle.value.play();
-    state.isPlay = true
-}
-
-function stopEp(){
-    audioEle.value.pause()
-    state.isPlay = false
-}
-
-function setEpTime(time){
+function setAudioTime(time){
     audioEle.value.currentTime = time
 }
 
-function setEpVolume(vol){
+function setAudioVolume(vol){
     audioEle.value.volume = vol/100
 }
+// end of audio state change
 
-// end of state change
 
-// action 
+// local state change
+function setLocalVolume(vol){
+    state.volume = vol
+}
+//end of local stage change
+
+// change storage state
+function storeCurrTimeToStorage(time){
+    setStorageCurrTime(state.nowPlaying.guid,time)
+}
+//
+// trigger function  
+async function playEp(){
+    let time =  getStorageCurrTime(state.nowPlaying.guid)
+
+    if(time !== 0){
+        setAudioTime(time)
+    } else{
+        storeCurrTimeToStorage(0)
+    }
+
+    audioEle.value.play();
+    setGlobalIsPlay(true)
+}
+
+async function stopEp(){
+    audioEle.value.pause()
+    setGlobalIsPlay(false)
+    storeCurrTimeToStorage(state.globalPlayingCurrTime)
+}
+
 function playToggle() {
-    !state.isPlay ? playEp() : stopEp()
+    state.globalIsPlay 
+        ? stopEp()
+        : playEp()
 }
 
 function playNextEp() {
-    if(state.nextEp){
-        let ep = state.nextEp
-        setPlayEpisode(ep)
-    }
+    if(state.nextEp) setPlayEpisode(state.nextEp)
 }
 
 function playPreEp() {
-    if(state.preEp){
-        let ep = state.preEp
-        setPlayEpisode(ep)
-    }
+    if(state.preEp) setPlayEpisode(state.preEp)
 }
 
+function seekTo(e) {
+    setGlobalCurrTime(e.target.value)
+    setAudioTime(e.target.value)
+}
+
+function onVolumeDrag(e){
+    setLocalVolume(e.target.value)
+    setAudioVolume(e.target.value)
+}
+
+function volumeToggle() {
+    let vol =  state.volume > 0 ? 0 : 100
+    setLocalVolume(vol)
+    setAudioVolume(vol)
+}
+//  end of trigger function
+
+// call like event listener
+function onAudioTImeUpdate(){
+    setGlobalCurrTime(audioEle.value.currentTime)
+}
+// --- end of call like event listener
+
+// core function
 function loadEpisode(episode){
     let nowIdx = state.episodeList.findIndex(ep=>ep.guid === episode.guid)
     state.nextEp = state.episodeList[nowIdx-1]
     state.preEp =  state.episodeList[nowIdx+1]
     state.playedEp = episode.enclosure.url
-    setUpEp(episode)
-}
-
-function seekTo(e) {
-    state.currTime = e.target.value
-    setEpTime(e.target.value)
-}
-
-function onTimeUpdate(e){
-    state.currTime = audioEle.value.currentTime
-}
-
-function onVolumeDrag(e){
-    state.volume = e.target.value
-    setEpVolume(e.target.value)
-}
-
-function volumeToggle(params) {
-    let vol =  state.volume > 0 ? 0 : 100
-    state.volume = vol
-    setEpVolume(vol)
+    setUpAudio(episode)
 }
 
 onUpdated(()=>{
+    console.log('state change')
     if(Object.keys(state.nowPlaying).length > 0){
-        // console.log('state change')
-
-        // receive global playing target to 
+        // receive global playing target to actully play&load ep
         if(state.nowPlaying.enclosure.url !== state.playedEp){
             loadEpisode(state.nowPlaying)
             playEp()
         }
 
-        // play next ep => change global playing let other case(only) to change
+        // when ep ended
         if(audioEle.value.ended && state.nextEp !== undefined ){
-            setPlayEpisode(state.nextEp)
-            // stopEp()
-            state.isPlay = false
+            storeCurrTimeToStorage(state.globalPlayingCurrTime) // set ended ep to storage
+            setPlayEpisode(state.nextEp) // play next ep => change global playing 
+        }
+
+        // when outside action trigger globalIsPlay -> false,  pause audio
+        if(state.globalIsPlay === false && state.outsideTrigger){
+            console.log('outside stop!!!!')
+            setOutSideTrigger(false)
+            stopEp()
         }
     }
 })
+//
 </script>
 
 <template>
     <div v-if="Object.keys(state.nowPlaying).length > 0" class="fixed bottom-0 w-full bg-slate-800 text-white flex flex-col">
         <!-- audio -->
-        <audio hidden ref="audioEle" @timeupdate="onTimeUpdate">
+        <audio hidden ref="audioEle" @timeupdate="onAudioTImeUpdate">
             <source :src="state.playedEp">
         </audio>
         <!-- end of audio-->
 
         <div class="flex flex-col items-center relative">
-            <input class="w-[100%]" type="range" min="1" :max="state.nowPlaying.itunes.duration" :value="state.currTime" @input="seekTo">
+            <input class="w-[100%]" type="range" min="1" :max="state.nowPlaying.itunes.duration" :value="state.globalPlayingCurrTime" @input="seekTo">
             <time class="absolute top-4">
-                <span>{{secFormateTime(state.currTime)}}</span> / <span>{{secFormateTime(state.nowPlaying.itunes.duration)}}</span>
+                <span>{{secFormateTime(state.globalPlayingCurrTime)}}</span> / <span>{{secFormateTime(state.nowPlaying.itunes.duration)}}</span>
             </time>
         </div>
 
@@ -144,7 +166,7 @@ onUpdated(()=>{
                 </span>
 
                 <span class="text-[2.5rem] media-btn" @click="playToggle">
-                    <font-awesome-icon v-if="state.isPlay === false" :icon="['fas', 'circle-play']" />
+                    <font-awesome-icon v-if="state.globalIsPlay === false" :icon="['fas', 'circle-play']" />
                     <font-awesome-icon v-else :icon="['fas', 'circle-stop']" />
                 </span>
 

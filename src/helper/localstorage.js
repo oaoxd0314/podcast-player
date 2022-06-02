@@ -13,25 +13,35 @@ export function deleteStorage(target){
     localStorage.removeItem(target)
 }
 
-// ep status
 export function initEpStorage(){
     const epMap = new Map()
     setStorage('epStatus',epMap)
 }
 
+// ep status by guid
 export function getEpStatus(guid){
     let epMap = getStorage('epStatus')
     let epStatus = {}
     
     if(epMap.has(guid)) epStatus = epMap.get(guid)
-
     return epStatus
 }
 
-export function setEpStatus(guid,currTime){
+export function setEpStatus(guid,data){
     let epMap = getStorage('epStatus')
-    epMap.set(guid,{currTime})
+    epMap.set(guid,data)
 
     setStorage('epStatus',epMap)
 }
 
+//ep curr time
+export function getStorageCurrTime(guid){
+    let epStatus = getEpStatus(guid)
+    return ('currTime' in epStatus) ? epStatus.currTime : 0
+}
+
+export function setStorageCurrTime(guid,currTime){
+    let epStatus = getEpStatus(guid)
+    epStatus.currTime = currTime
+    setEpStatus(guid,epStatus)
+}

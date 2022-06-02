@@ -1,3 +1,18 @@
+<script setup>
+  import {defineProps,defineEmits} from 'vue'
+
+  const props = defineProps({
+    episode: Object,
+  })
+
+  const emit = defineEmits(['playEpisode'])
+
+  function play(episode){
+    emit('playEpisode',episode)
+  }
+
+</script>
+
 <template>
   <section class="inline-space flex flex-row rounded-[.5rem] hover:bg-zinc-600 group">
     <picture class="flex-shrink-0">
@@ -19,7 +34,15 @@
           <slot name="episode-describe"></slot>
         </p>
 
-        <slot name="episode-play"></slot>
+        <div class="absolute bottom-0 left-0 flex flex-row items-center">
+            <button @click="()=>play(props.episode)" class="font-semibold text-sm p-[.5rem] ">
+              <span  class="text-purple-500 mr-[.5rem]">
+                <slot name="episode-play-icon"></slot>
+              </span>
+              <slot name="episode-play-status"></slot>
+            </button>
+            <slot name="episode-play-time"></slot>
+        </div>
         
       </figure>
 

@@ -1,6 +1,7 @@
 <script setup>
   import {onMounted, provide} from 'vue'
   import { RouterLink, RouterView } from 'vue-router'
+  
   import MediaPlayer from './components/MediaPlayer.vue';
   import NavbarVue from './components/Navbar.vue';
 
@@ -72,6 +73,7 @@ header {
 .episode-function-icon{
   @apply p-[.5rem] hover:text-purple-500
 }
+
 
 @media (hover: hover) {
   a:hover {
