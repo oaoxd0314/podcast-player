@@ -6,8 +6,6 @@ const state = reactive({
   nowPlaying:{},
   globalIsPlay:false,
   globalPlayingCurrTime:0,
-
-  outsideTrigger:false,
 });
 
 const setEpisodeList = (episodes) =>{
@@ -30,10 +28,6 @@ const setGlobalCurrTime = (time) =>{
   state.globalPlayingCurrTime = time
 }
 
-const setOutSideTrigger = (bool) =>{
-  state.outsideTrigger = bool
-}
-
 export default {
   store: readonly(state),
   setChannel,
@@ -41,5 +35,4 @@ export default {
   setPlayEpisode,
   setGlobalIsPlay,
   setGlobalCurrTime,
-  setOutSideTrigger
 };

@@ -10,7 +10,7 @@
   import Progress from "../components/Progress.vue";
 
   const mapStore = inject("mapStore");
-  const { store,setPlayEpisode } = mapStore;
+  const { store,setPlayEpisode,setGlobalIsPlay } = mapStore;
   const route = useRoute();
 
   const state = reactive({
@@ -20,7 +20,13 @@
   });
   
   function playEp(ep){
-    setPlayEpisode(ep)
+    if(state.globalIsPlay){ 
+        setGlobalIsPlay(false)
+    }else{
+        setGlobalIsPlay(true)
+        setPlayEpisode(ep)
+    }
+    
   }
 
   function getEpisodeData(){

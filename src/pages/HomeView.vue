@@ -10,7 +10,7 @@ import ChannelBoardLoading from "../components/lodingView/channelBoardLoading.vu
 import EpisodeListLoading from "../components/lodingView/episodeListLoading.vue";
 
 const mapStore = inject("mapStore");
-const { store ,setEpisodeList ,setChannel ,setPlayEpisode,setGlobalIsPlay,setOutSideTrigger } = mapStore;
+const { store ,setEpisodeList ,setChannel ,setPlayEpisode,setGlobalIsPlay } = mapStore;
 
 const state = reactive({
     ...toRefs(store),
@@ -42,11 +42,10 @@ async function getFeed(url) {
 }
 
 function onPlayClick(episode){
-
     if(state.globalIsPlay && (episode.guid === state.nowPlaying.guid)){ 
         setGlobalIsPlay(false)
     }else{
-        setOutSideTrigger(true)
+        setGlobalIsPlay(true)
         setPlayEpisode(episode)
     }
 }

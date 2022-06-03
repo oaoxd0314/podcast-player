@@ -1,8 +1,8 @@
 <script setup>
-import { reactive, toRefs, inject, ref, onUpdated} from 'vue';
+import { reactive, toRefs, inject, ref, onUpdated, watch} from 'vue';
 import {secFormateTime,setStorageCurrTime,getStorageCurrTime} from '../helper'
 const mapStore = inject("mapStore");
-const { store, setPlayEpisode,setGlobalCurrTime,setGlobalIsPlay,setOutSideTrigger } = mapStore;
+const { store, setPlayEpisode,setGlobalCurrTime,setGlobalIsPlay } = mapStore;
 
 const state = reactive({
     ...toRefs(store),
@@ -109,10 +109,10 @@ function loadEpisode(episode){
 }
 
 onUpdated(()=>{
-    // console.log('state change')
     if(Object.keys(state.nowPlaying).length > 0){
         // receive global playing target to actully play&load ep
         if(state.nowPlaying.enclosure.url !== state.playedEp){
+            console.log('should play')
             loadEpisode(state.nowPlaying)
             playEp()
         }
@@ -122,15 +122,22 @@ onUpdated(()=>{
             storeCurrTimeToStorage(state.globalPlayingCurrTime) // set ended ep to storage
             setPlayEpisode(state.nextEp) // play next ep => change global playing 
         }
-
-        // when outside action trigger globalIsPlay -> false,  pause audio
-        if(state.globalIsPlay === false && state.outsideTrigger){
-            // console.log('outside stop!!!!')
-            setOutSideTrigger(false)
-            stopEp()
-        }
     }
 })
+
+watch(
+    // watch is play 
+    ()=>{
+        return state.globalIsPlay
+    },
+    ()=>{
+        if(state.globalIsPlay === false)  stopEp()
+        else{
+            playEp()
+            console.log('is play')
+        }
+    }
+)
 //
 </script>
 
