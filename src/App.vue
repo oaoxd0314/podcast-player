@@ -6,12 +6,25 @@
   import NavbarVue from './components/Navbar.vue';
 
   import store from './store'
-  import {getStorage,initEpStorage,deleteStorage} from './helper'
+  import {getStorage,initEpStorage,deleteStorage, fetchAPI} from './helper'
 
   provide("mapStore", store);
 
+  function testProxy(){
+    try {
+      fetch('/soundon').then(res=>{
+        console.log(res)
+      }).catch(err=>{
+        console.log(err)
+      })
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
   onMounted(()=>{
     // deleteStorage('epStatus')
+    testProxy()
     if(getStorage('epStatus') === null){
       initEpStorage()
     }
